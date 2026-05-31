@@ -1,0 +1,28 @@
+\babel@toc {spanish}{}\relax 
+\contentsline {section}{\numberline {1}Comprension del problema}{3}{section.1}%
+\contentsline {section}{\numberline {2}Carga del dataset}{3}{section.2}%
+\contentsline {section}{\numberline {3}Diccionario de variables}{3}{section.3}%
+\contentsline {section}{\numberline {4}Calidad de datos}{4}{section.4}%
+\contentsline {section}{\numberline {5}Analisis exploratorio de datos}{4}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Histogramas}{5}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Boxplots}{5}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Conteos}{5}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.4}Correlaciones}{5}{subsection.5.4}%
+\contentsline {subsection}{\numberline {5.5}Analisis multivariado}{5}{subsection.5.5}%
+\contentsline {section}{\numberline {6}Preparacion de datos}{5}{section.6}%
+\contentsline {section}{\numberline {7}Modelos supervisados}{6}{section.7}%
+\contentsline {subsection}{\numberline {7.1}Clasificacion}{6}{subsection.7.1}%
+\contentsline {subsection}{\numberline {7.2}Regresion}{6}{subsection.7.2}%
+\contentsline {section}{\numberline {8}Modelos no supervisados}{7}{section.8}%
+\contentsline {subsection}{\numberline {8.1}PCA}{7}{subsection.8.1}%
+\contentsline {subsection}{\numberline {8.2}K-Means, clustering jerarquico y DBSCAN}{7}{subsection.8.2}%
+\contentsline {subsection}{\numberline {8.3}Reglas de asociacion}{7}{subsection.8.3}%
+\contentsline {subsection}{\numberline {8.4}Analisis de correspondencias}{7}{subsection.8.4}%
+\contentsline {section}{\numberline {9}Evaluacion}{8}{section.9}%
+\contentsline {subsection}{\numberline {9.1}Metricas de clasificacion}{8}{subsection.9.1}%
+\contentsline {subsection}{\numberline {9.2}Metricas de regresion}{8}{subsection.9.2}%
+\contentsline {subsection}{\numberline {9.3}Metricas de clustering}{8}{subsection.9.3}%
+\contentsline {section}{\numberline {10}Comparacion de modelos}{8}{section.10}%
+\contentsline {section}{\numberline {11}Mejor modelo y justificacion}{9}{section.11}%
+\contentsline {section}{\numberline {12}Conclusiones}{9}{section.12}%
+\contentsline {section}{\numberline {13}Limitaciones y mejoras futuras}{9}{section.13}%

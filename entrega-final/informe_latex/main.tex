@@ -1,0 +1,261 @@
+\documentclass[12pt,letterpaper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{float}
+
+\geometry{margin=2.5cm}
+\setlength{\parskip}{0.6em}
+\setlength{\parindent}{0pt}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!45!black,
+    urlcolor=blue!45!black
+}
+
+\title{\textbf{Proyecto Final de Mineria de Datos}\\
+\large Aplicacion integral sobre el dataset \texttt{Cancer\_Data.csv}}
+\author{Curso 26160 Mineria de Datos}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Este informe resume el desarrollo del proyecto final de Mineria de Datos aplicado al dataset \texttt{Cancer\_Data.csv}. El objetivo es analizar mediciones de tumores y construir modelos que ayuden a diferenciar diagnosticos benignos y malignos. El trabajo integra preparacion de datos, analisis exploratorio, modelos supervisados, modelos no supervisados, PCA, reglas de asociacion y analisis de correspondencias. El lenguaje del informe esta orientado a una exposicion academica: se explica que se hizo, por que se hizo y como se interpretan los resultados.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+\section{Comprension del problema}
+
+El problema consiste en estudiar un conjunto de mediciones asociadas a tumores y usar esas variables para comprender y predecir el diagnostico: benigno o maligno. En terminos de mineria de datos, este es principalmente un problema de clasificacion supervisada, porque existe una variable objetivo llamada \texttt{diagnosis}.
+
+Ademas de clasificar, el proyecto tambien explora preguntas complementarias:
+
+\begin{itemize}[leftmargin=*]
+    \item Si se oculta el diagnostico, \textquestiondown los pacientes forman grupos naturales?
+    \item \textquestiondown Que variables parecen diferenciar mejor los casos benignos y malignos?
+    \item \textquestiondown Que ocurre si se reduce la dimensionalidad usando PCA?
+    \item \textquestiondown Se pueden encontrar reglas faciles de explicar a partir de variables discretizadas?
+\end{itemize}
+
+En un contexto medico, el analisis no debe enfocarse solo en obtener un valor alto de accuracy. Tambien importa revisar falsos negativos, porque clasificar como benigno un caso maligno puede ser mucho mas delicado que otros errores.
+
+\section{Carga del dataset}
+
+El dataset utilizado es \texttt{Cancer\_Data.csv}. Cada fila representa un registro de tumor y cada columna contiene una medicion o una etiqueta de diagnostico.
+
+Durante la carga se realizan pasos de limpieza basicos:
+
+\begin{itemize}[leftmargin=*]
+    \item limpieza de nombres de columnas;
+    \item eliminacion de comillas y espacios innecesarios;
+    \item eliminacion de columnas no informativas, como \texttt{id} para modelado;
+    \item codificacion de \texttt{diagnosis}, donde maligno se representa como 1 y benigno como 0.
+\end{itemize}
+
+\section{Diccionario de variables}
+
+El dataset tiene una estructura muy ordenada. Las variables predictoras se construyen combinando una caracteristica del tumor con un resumen estadistico.
+
+\begin{longtable}{p{0.25\textwidth}p{0.68\textwidth}}
+\toprule
+\textbf{Elemento} & \textbf{Interpretacion} \\
+\midrule
+\endhead
+\texttt{diagnosis} & Variable objetivo. Indica si el tumor es maligno (\texttt{M}) o benigno (\texttt{B}). \\
+\texttt{id} & Identificador del registro. No aporta informacion clinica para entrenar modelos. \\
+\texttt{radius} & Radio del tumor. \\
+\texttt{texture} & Textura o variacion de intensidad. \\
+\texttt{perimeter} & Perimetro del tumor. \\
+\texttt{area} & Area del tumor. \\
+\texttt{smoothness} & Suavidad del contorno. \\
+\texttt{compactness} & Compacidad del tumor. \\
+\texttt{concavity} & Grado de concavidad. \\
+\texttt{concave points} & Cantidad de puntos concavos. \\
+\texttt{symmetry} & Simetria del tumor. \\
+\texttt{fractal\_dimension} & Complejidad del borde. \\
+\texttt{\_mean} & Valor promedio de la medicion. \\
+\texttt{\_se} & Error estandar de la medicion. \\
+\texttt{\_worst} & Valor mas extremo o peor observado. \\
+\bottomrule
+\end{longtable}
+
+Por ejemplo, \texttt{radius\_mean} representa el promedio del radio, mientras que \texttt{radius\_worst} representa su valor mas extremo. Esta estructura permite explicar el dataset de forma clara sin perder detalle.
+
+\section{Calidad de datos}
+
+La revision de calidad de datos considera valores nulos, duplicados, tipos de datos y posibles outliers.
+
+Los valores nulos se revisan antes de entrenar modelos para evitar errores o sesgos. Las columnas completamente vacias se eliminan. Los duplicados se verifican para asegurar que no haya registros repetidos que inflen artificialmente el desempeno.
+
+Los outliers se detectan con el criterio de rango intercuartil. En este proyecto no se eliminan automaticamente, porque en datos medicos un valor extremo puede representar un caso clinico importante y no necesariamente un error.
+
+\section{Analisis exploratorio de datos}
+
+El analisis exploratorio permite entender el comportamiento del dataset antes de entrenar modelos.
+
+\subsection{Histogramas}
+
+Los histogramas muestran la distribucion de variables como area, textura, concavidad y puntos concavos. Varias variables presentan colas hacia valores altos, lo cual indica que algunos tumores tienen mediciones considerablemente mayores que el promedio.
+
+\subsection{Boxplots}
+
+Los boxplots comparan las variables numericas segun el diagnostico. En general, los casos malignos tienden a presentar valores mas altos en mediciones relacionadas con tamano y forma, especialmente area, concavidad y puntos concavos.
+
+\subsection{Conteos}
+
+El conteo de la variable objetivo permite revisar si existe desbalance entre benignos y malignos. Esta revision es importante porque un modelo podria parecer bueno si predice muy bien la clase mayoritaria, pero fallar en la clase clinicamente mas delicada.
+
+\subsection{Correlaciones}
+
+La matriz de correlacion muestra relaciones fuertes entre variables como radio, perimetro y area. Esto sugiere redundancia: varias columnas contienen informacion parecida. Por esta razon PCA es una tecnica adecuada para reducir dimensionalidad y resumir informacion.
+
+\subsection{Analisis multivariado}
+
+Los graficos multivariados muestran que la separacion entre benigno y maligno no depende de una sola variable. El patron aparece cuando se observan varias mediciones al mismo tiempo.
+
+\section{Preparacion de datos}
+
+La preparacion de datos se realiza con cuidado para evitar fuga de informacion.
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Variables eliminadas:} se elimina \texttt{id} porque es solo un identificador.
+    \item \textbf{Imputacion:} si aparecen valores faltantes numericos, se tratan con medidas robustas como la mediana.
+    \item \textbf{Encoding:} \texttt{diagnosis} se transforma a formato numerico.
+    \item \textbf{Escalado:} se usa \texttt{StandardScaler} en modelos sensibles a escala, como KNN, SVM, regresion logistica y PCA.
+    \item \textbf{Train/Test:} se separan datos de entrenamiento y prueba, usando estratificacion cuando se clasifica para conservar la proporcion de benignos y malignos.
+\end{itemize}
+
+\section{Modelos supervisados}
+
+\subsection{Clasificacion}
+
+Se implementan y comparan los modelos vistos en clase:
+
+\begin{itemize}[leftmargin=*]
+    \item Regresion Logistica.
+    \item K-Nearest Neighbors.
+    \item Arbol de Decision.
+    \item Random Forest.
+    \item Support Vector Machine.
+    \item Naive Bayes.
+\end{itemize}
+
+La comparacion usa accuracy, precision, recall, F1-score y matriz de confusion. Para este problema, recall en la clase maligna tiene especial importancia porque ayuda a medir cuantos casos malignos logra detectar el modelo.
+
+\subsection{Regresion}
+
+Aunque el dataset esta pensado para clasificacion, se define una variable continua para practicar los modelos de regresion solicitados:
+
+\begin{itemize}[leftmargin=*]
+    \item Regresion Lineal.
+    \item Ridge.
+    \item Lasso.
+    \item Arbol de Decision para regresion.
+    \item Random Forest Regressor.
+\end{itemize}
+
+Las metricas usadas son MAE, MSE, RMSE y $R^2$. En exposicion, MAE y RMSE se interpretan como error de prediccion, mientras que $R^2$ indica que tanta variabilidad del objetivo logra explicar el modelo.
+
+\section{Modelos no supervisados}
+
+\subsection{PCA}
+
+PCA se utiliza para reducir dimensionalidad. En las comparaciones con PCA se estandariza el uso de las primeras cinco componentes principales. Esta decision permite comparar de forma mas justa Arbol de Decision, KNN, Regresion y Random Forest bajo la misma representacion reducida.
+
+En la seccion de Random Forest con PCA, el notebook fue corregido para usar:
+
+\begin{center}
+\texttt{PCA(n\_components=5)}
+\end{center}
+
+Esto evita que Random Forest tenga una ventaja metodologica por usar mas componentes que los demas modelos.
+
+\subsection{K-Means, clustering jerarquico y DBSCAN}
+
+Los modelos de clustering permiten explorar si existen grupos naturales sin usar la etiqueta \texttt{diagnosis}. K-Means agrupa alrededor de centros, el clustering jerarquico permite observar agrupaciones mediante dendrograma y DBSCAN identifica zonas densas, dejando algunos puntos como ruido si no pertenecen claramente a un grupo.
+
+\subsection{Reglas de asociacion}
+
+Para aplicar reglas de asociacion, las variables numericas se discretizan en categorias como bajo, medio y alto. Asi se pueden generar reglas del tipo:
+
+\begin{center}
+\texttt{concavity\_mean=Alto} $\rightarrow$ \texttt{diagnosis=Maligno}
+\end{center}
+
+Las reglas se interpretan con soporte, confianza y lift.
+
+\subsection{Analisis de correspondencias}
+
+El analisis de correspondencias permite estudiar relaciones entre categorias. En este proyecto se usa para observar que categorias de variables quedan mas cerca de diagnosticos benignos o malignos.
+
+\section{Evaluacion}
+
+\subsection{Metricas de clasificacion}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Accuracy:} proporcion total de aciertos.
+    \item \textbf{Precision:} de los casos predichos como malignos, cuantos realmente lo eran.
+    \item \textbf{Recall:} de los casos malignos reales, cuantos fueron detectados.
+    \item \textbf{F1-score:} equilibrio entre precision y recall.
+    \item \textbf{Matriz de confusion:} permite ver falsos positivos y falsos negativos.
+\end{itemize}
+
+\subsection{Metricas de regresion}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{MAE:} error absoluto promedio.
+    \item \textbf{MSE:} error cuadratico medio.
+    \item \textbf{RMSE:} raiz del MSE, en la escala del objetivo.
+    \item \textbf{$R^2$:} proporcion de variabilidad explicada.
+\end{itemize}
+
+\subsection{Metricas de clustering}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Silhouette Score:} mide que tan bien separado esta un punto de otros grupos.
+    \item \textbf{Indice de Dunn:} premia clusters compactos y separados.
+\end{itemize}
+
+\section{Comparacion de modelos}
+
+La comparacion debe leerse en dos niveles. Primero, se revisa el desempeno numerico. Segundo, se interpreta si el modelo es adecuado para el contexto.
+
+Random Forest sin PCA suele ser un candidato fuerte porque combina buen desempeno con importancia de variables originales. Los modelos con PCA permiten evaluar que tanto rendimiento se conserva al resumir la informacion en cinco componentes. SVM y Naive Bayes complementan la comparacion: SVM ofrece una frontera potente y Naive Bayes funciona como modelo probabilistico simple.
+
+\section{Mejor modelo y justificacion}
+
+El modelo recomendado debe seleccionarse despues de ejecutar completamente el notebook y revisar la tabla final de metricas. El criterio sugerido es priorizar recall y F1-score para la clase maligna.
+
+Si Random Forest sin PCA mantiene el mejor equilibrio entre recall, F1-score e interpretabilidad, se recomienda como modelo principal. Si un modelo con PCA obtiene metricas muy cercanas, puede presentarse como alternativa compacta, aclarando que las componentes principales son menos interpretables que las variables originales.
+
+\section{Conclusiones}
+
+El dataset contiene patrones claros para diferenciar tumores benignos y malignos. Las variables asociadas con tamano, concavidad y puntos concavos aparecen como relevantes en el EDA y en los modelos.
+
+PCA ayuda a reducir dimensionalidad y a comparar modelos bajo una representacion comun. La correccion realizada en Random Forest con PCA fortalece la consistencia metodologica, porque ahora todos los modelos con PCA usan cinco componentes.
+
+Los modelos no supervisados y las reglas de asociacion enriquecen el proyecto porque muestran que mineria de datos no es solo predecir. Tambien implica explorar grupos, descubrir relaciones y traducir patrones a explicaciones comprensibles.
+
+\section{Limitaciones y mejoras futuras}
+
+\begin{itemize}[leftmargin=*]
+    \item El dataset es pequeno para extraer conclusiones clinicas definitivas.
+    \item Las metricas dependen de la particion train/test usada.
+    \item Una mejora natural es aplicar validacion cruzada.
+    \item Tambien se pueden ajustar hiperparametros con busquedas sistematicas.
+    \item Para uso real se requiere validacion externa con otros datos.
+\end{itemize}
+
+\end{document}
