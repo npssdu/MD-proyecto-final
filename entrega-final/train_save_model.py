@@ -9,8 +9,9 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
 from sklearn.naive_bayes import GaussianNB
 
-# Cargar dataset
+# Cargar dataset y limpiar espacios/comillas en columnas
 df = pd.read_csv('Cancer_Data.csv')
+df.columns = df.columns.str.strip().str.replace('"', '').str.replace("'", "")
 
 # Limpieza de datos exactamente como en el notebook
 if 'Unnamed: 32' in df.columns:
@@ -18,8 +19,8 @@ if 'Unnamed: 32' in df.columns:
 if 'id' in df.columns:
     df.drop('id', axis=1, inplace=True)
 
-# Mapear diagnóstico: M=1, B=0
-df['diagnosis'] = df['diagnosis'].map({'M': 1, 'B': 0})
+# Mapear diagnóstico: M=1, B=0, asegurando quitar espacios y comillas
+df['diagnosis'] = df['diagnosis'].astype(str).str.replace('"', '').str.replace("'", "").str.strip().map({'M': 1, 'B': 0})
 
 # Variables dependientes e independientes
 X = df.drop('diagnosis', axis=1)
