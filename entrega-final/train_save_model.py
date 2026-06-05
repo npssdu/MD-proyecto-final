@@ -1,5 +1,6 @@
 import pandas as pd
 import pickle
+import os
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
@@ -35,8 +36,11 @@ scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
 # X_test_scaled = scaler.transform(X_test) # Opcional si solo queremos guardar
 
+# Crear directorio de modelos si no existe
+os.makedirs('modelos', exist_ok=True)
+
 # Guardar el scaler
-with open('scaler.pkl', 'wb') as f:
+with open('modelos/scaler.pkl', 'wb') as f:
     pickle.dump(scaler, f)
 
 # Diccionario de modelos
@@ -52,8 +56,9 @@ modelos = {
 # Entrenar y guardar cada modelo
 for nombre_archivo, modelo in modelos.items():
     modelo.fit(X_train_scaled, y_train)
-    with open(nombre_archivo, 'wb') as f:
+    ruta_guardado = os.path.join('modelos', nombre_archivo)
+    with open(ruta_guardado, 'wb') as f:
         pickle.dump(modelo, f)
-    print(f'Guardado exitosamente: {nombre_archivo}')
+    print(f'Guardado exitosamente: {ruta_guardado}')
 
 print('Proceso de entrenamiento y guardado finalizado.')

@@ -48,12 +48,12 @@ El sistema clasifica el núcleo celular para determinar si la muestra presenta c
 
 # Diccionario de modelos
 MODELOS_DISPONIBLES = {
-    'Regresión Logística': 'lr_model.pkl',
-    'K-Nearest Neighbors (KNN)': 'knn_model.pkl',
-    'Árbol de Decisión': 'dt_model.pkl',
-    'Random Forest': 'rf_model.pkl',
-    'Support Vector Machine (SVM)': 'svm_model.pkl',
-    'Naive Bayes': 'nb_model.pkl'
+    'Regresión Logística': 'modelos/lr_model.pkl',
+    'K-Nearest Neighbors (KNN)': 'modelos/knn_model.pkl',
+    'Árbol de Decisión': 'modelos/dt_model.pkl',
+    'Random Forest': 'modelos/rf_model.pkl',
+    'Support Vector Machine (SVM)': 'modelos/svm_model.pkl',
+    'Naive Bayes': 'modelos/nb_model.pkl'
 }
 
 # Configuración de la barra lateral
@@ -117,12 +117,12 @@ with col2:
     archivo_modelo = MODELOS_DISPONIBLES[modelo_seleccionado]
     
     if st.button("🔬 Realizar Diagnóstico Predictivo", use_container_width=True):
-        if not os.path.exists('scaler.pkl') or not os.path.exists(archivo_modelo):
-            st.error("❌ Archivos de modelo o escalador no encontrados. Por favor, asegúrese de haber generado los `.pkl`.")
+        if not os.path.exists('modelos/scaler.pkl') or not os.path.exists(archivo_modelo):
+            st.error("❌ Archivos de modelo o escalador no encontrados. Por favor, asegúrese de haber generado los `.pkl` en la carpeta `modelos/`.")
         else:
             try:
                 # Cargar modelo y scaler
-                with open('scaler.pkl', 'rb') as f:
+                with open('modelos/scaler.pkl', 'rb') as f:
                     scaler = pickle.load(f)
                 with open(archivo_modelo, 'rb') as f:
                     modelo = pickle.load(f)
