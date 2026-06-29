@@ -1,120 +1,85 @@
-# Proyecto Final - Dataset de Cancer de Mama
+# 🧬 Proyecto Final: Minería de Datos - Predicción de Cáncer de Mama
+*Universidad - Curso de Minería de Datos*
 
-## Descripcion general
-Este repositorio trabaja con el dataset **Cancer Data** de Kaggle:
-- Fuente: https://www.kaggle.com/datasets/erdemtaha/cancer-data
-- Archivo local usado: `Cancer_Data.csv`
+[🇬🇧 English version below](#-final-project-data-mining---breast-cancer-prediction)
 
-El dataset corresponde a una version del **Breast Cancer Wisconsin (Diagnostic) Dataset (WDBC)**, ampliamente usado en tareas de clasificacion binaria para apoyar diagnostico de cancer de mama a partir de caracteristicas extraidas de imagenes.
+## 📌 Descripción General (Español)
+Este repositorio contiene el proyecto final para el curso de Minería de Datos. El objetivo principal de este proyecto es aplicar el ciclo completo de minería de datos (desde el análisis exploratorio hasta el despliegue del modelo) para predecir si una masa tumoral mamaria es **Benigna** o **Maligna**. 
 
-Cada fila representa una muestra/paciente y contiene:
-- Un identificador unico (`id`)
-- La etiqueta diagnostica (`diagnosis`)
-- Variables numericas derivadas de caracteristicas morfologicas de la masa tumoral
+Para ello, utilizamos el [Breast Cancer Wisconsin (Diagnostic) Dataset](https://www.kaggle.com/datasets/erdemtaha/cancer-data) obtenido de Kaggle.
 
-## Estado actual del proyecto
-En este workspace ya se encuentran:
-- `Cancer_Data.csv` (dataset)
-- `MD_Trabajo_Primer_Corte.ipynb` (primer informe/notebook)
-- `Informe-Trabajo-Primer-Corte.pdf` (reporte generado)
+## 🚀 ¿Qué problema soluciona?
+El diagnóstico temprano y preciso del cáncer de mama salva vidas. Este proyecto soluciona el problema de clasificar características morfológicas de núcleos celulares obtenidos por biopsia, brindando una herramienta de software de apoyo clínico automatizada basada en Inteligencia Artificial. Esto ayuda a los profesionales médicos a obtener una segunda opinión probabilística rápida y confiable.
 
-## Estructura del dataset
-A partir del archivo local cargado en este repositorio:
-- Filas: **569**
-- Columnas: **32**
-- Archivo: **CSV**
-- Tamano reportado en Kaggle: aprox. **125.2 kB**
+## 🛠️ ¿Qué se hizo en este proyecto?
+El proyecto cumple con estrictos lineamientos académicos e incluye las siguientes etapas:
 
-### Variable objetivo
-`diagnosis`:
-- `M`: Maligno
-- `B`: Benigno
+1. **Análisis Exploratorio de Datos (EDA) y Calidad de Datos:** Identificación de nulos, outliers, distribuciones (histogramas, boxplots) y análisis multivariado/correlaciones.
+2. **Preparación de Datos:** Imputación, transformación, codificación de variables y escalado. División del dataset en conjuntos de entrenamiento (Train) y prueba (Test).
+3. **Modelos Supervisados (Clasificación):** Entrenamiento y afinamiento de múltiples algoritmos:
+   - Regresión Logística
+   - K-Nearest Neighbors (KNN)
+   - Árbol de Decisión
+   - Random Forest
+   - Support Vector Machine (SVM)
+   - Naive Bayes
+4. **Modelos No Supervisados:** Aplicación de técnicas de agrupamiento y reducción de dimensionalidad: PCA, K-Means, Clustering Jerárquico y DBSCAN.
+5. **Evaluación y Selección de Modelos:** Comparación rigurosa utilizando Accuracy, Precision, Recall, F1-Score y Matrices de Confusión, priorizando el Recall para la clase maligna debido al contexto médico.
+6. **Despliegue (App Interactiva):** Construcción de un **Sistema de Diagnóstico Oncológico Asistido** usando Streamlit (`app.py`), empaquetado en Docker, que permite realizar inferencias en tiempo real utilizando los modelos entrenados.
 
-Distribucion de clases en el CSV local:
-- `B` (Benigno): **357** (~62.74%)
-- `M` (Maligno): **212** (~37.26%)
+## 📁 Estructura Principal del Repositorio
+- `Cancer_Data.csv`: Dataset original.
+- `entrega-final/Notebook_Final/`: Contiene el notebook de Jupyter/Colab con el proceso de minería de datos documentado y el análisis técnico completo.
+- `entrega-final/Programa_Final/`: Contiene el sistema en producción.
+  - `app.py`: Interfaz de usuario interactiva (Streamlit).
+  - `train_save_model.py`: Script para entrenar y guardar los modelos (`.pkl`).
+  - `Dockerfile` & `requirements.txt`: Archivos para fácil contenedorización y despliegue.
 
-## Diccionario de variables
+## 💻 ¿Cómo ejecutar la aplicación localmente?
+1. Instala las dependencias: `pip install -r entrega-final/Programa_Final/requirements.txt`
+2. Navega a la carpeta del programa: `cd entrega-final/Programa_Final`
+3. Ejecuta Streamlit: `streamlit run app.py`
 
-### 1) Identificacion y etiqueta
-- `id`: identificador unico de la observacion
-- `diagnosis`: clase objetivo (M/B)
+---
 
-### 2) Variables de medias (`*_mean`)
-- `radius_mean`
-- `texture_mean`
-- `perimeter_mean`
-- `area_mean`
-- `smoothness_mean`
-- `compactness_mean`
-- `concavity_mean`
-- `concave points_mean`
-- `symmetry_mean`
-- `fractal_dimension_mean`
+<br>
 
-### 3) Variables de error estandar (`*_se`)
-- `radius_se`
-- `texture_se`
-- `perimeter_se`
-- `area_se`
-- `smoothness_se`
-- `compactness_se`
-- `concavity_se`
-- `concave points_se`
-- `symmetry_se`
-- `fractal_dimension_se`
+# 🧬 Final Project: Data Mining - Breast Cancer Prediction
+*University - Data Mining Course*
 
-### 4) Variables de peor caso (`*_worst`)
-- `radius_worst`
-- `texture_worst`
-- `perimeter_worst`
-- `area_worst`
-- `smoothness_worst`
-- `compactness_worst`
-- `concavity_worst`
-- `concave points_worst`
-- `symmetry_worst`
-- `fractal_dimension_worst`
+## 📌 General Description (English)
+This repository contains the final project for the Data Mining course. The main objective of this project is to apply the full data mining lifecycle (from exploratory analysis to model deployment) to predict whether a breast tumor mass is **Benign** or **Malignant**.
 
-## Calidad de datos observada en este CSV
-Revision rapida del archivo local:
-- No se detectaron valores faltantes vacios por columna
-- Todas las variables predictoras son numericas continuas
-- `diagnosis` es categorica binaria
+For this, we utilized the [Breast Cancer Wisconsin (Diagnostic) Dataset](https://www.kaggle.com/datasets/erdemtaha/cancer-data) sourced from Kaggle.
 
-## Fuente original y trazabilidad
-El autor del dataset en Kaggle indica que este conjunto deriva del WDBC, con referencias a:
-- UCI Machine Learning Repository (Breast Cancer Wisconsin - Diagnostic)
-- Dataset relacionado en Kaggle (`uciml/breast-cancer-wisconsin-data`)
+## 🚀 What problem does it solve?
+Early and accurate diagnosis of breast cancer saves lives. This project solves the problem of classifying morphological features of cell nuclei obtained from biopsies, providing an automated AI-based clinical support software tool. This assists medical professionals in getting a fast and reliable probabilistic second opinion.
 
-Por trazabilidad academica, en reportes y presentaciones conviene citar:
-1. El dataset utilizado en Kaggle (erdemtaha/cancer-data)
-2. La fuente base WDBC/UCI
+## 🛠️ What was done in this project?
+The project adheres to strict academic guidelines and includes the following stages:
 
-## Licencia y uso
-En Kaggle, este dataset aparece con licencia:
-- **CC BY-NC-SA 4.0**
-- Link: https://creativecommons.org/licenses/by-nc-sa/4.0/
+1. **Exploratory Data Analysis (EDA) and Data Quality:** Identification of missing values, outliers, distributions (histograms, boxplots), and multivariate/correlation analysis.
+2. **Data Preparation:** Imputation, transformation, feature encoding, and scaling. Splitting the dataset into Training and Testing sets.
+3. **Supervised Learning Models (Classification):** Training and tuning of multiple algorithms:
+   - Logistic Regression
+   - K-Nearest Neighbors (KNN)
+   - Decision Tree
+   - Random Forest
+   - Support Vector Machine (SVM)
+   - Naive Bayes
+4. **Unsupervised Learning Models:** Application of clustering and dimensionality reduction techniques: PCA, K-Means, Hierarchical Clustering, and DBSCAN.
+5. **Model Evaluation & Selection:** Rigorous comparison using Accuracy, Precision, Recall, F1-Score, and Confusion Matrices, prioritizing Recall for the malignant class given the medical context.
+6. **Deployment (Interactive App):** Construction of an **Assisted Oncology Diagnostic System** using Streamlit (`app.py`), containerized with Docker, which allows real-time inferences using the trained models.
 
-Implicaciones practicas:
-- Requiere atribucion
-- Uso no comercial
-- Compartir bajo la misma licencia cuando aplique
+## 📁 Main Repository Structure
+- `Cancer_Data.csv`: Original dataset.
+- `entrega-final/Notebook_Final/`: Contains the Jupyter/Colab notebook with the fully documented data mining process and technical analysis.
+- `entrega-final/Programa_Final/`: Contains the production system.
+  - `app.py`: Interactive user interface (Streamlit).
+  - `train_save_model.py`: Script to train and save the models (`.pkl`).
+  - `Dockerfile` & `requirements.txt`: Files for easy containerization and deployment.
 
-## Recomendaciones para analisis/modelado
-Para continuar despues del primer informe, se sugiere:
-1. Separar conjunto de entrenamiento/prueba con estratificacion por `diagnosis`.
-2. Estandarizar variables numericas antes de modelos sensibles a escala (KNN, SVM, Regresion Logistica).
-3. Comparar modelos base: Regresion Logistica, KNN, SVM, Random Forest, XGBoost.
-4. Usar validacion cruzada y metricas mas alla de accuracy: precision, recall, F1, ROC-AUC.
-5. Priorizar sensibilidad/recall de la clase maligna (`M`) segun el objetivo clinico.
-6. Analizar importancia de variables y correlaciones para interpretabilidad.
-
-## Consideraciones tecnicas
-- Algunas columnas contienen espacios en su nombre (por ejemplo `concave points_mean`).
-  - Si se trabaja con pandas, puede ser util renombrar columnas (ej. reemplazar espacios por `_`) para facilitar consultas y pipelines.
-
-## Referencias
-- Dataset Kaggle: https://www.kaggle.com/datasets/erdemtaha/cancer-data
-- UCI WDBC: https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Wisconsin+%28Diagnostic%29
-- Licencia CC BY-NC-SA 4.0: https://creativecommons.org/licenses/by-nc-sa/4.0/
+## 💻 How to run the application locally?
+1. Install dependencies: `pip install -r entrega-final/Programa_Final/requirements.txt`
+2. Navigate to the program folder: `cd entrega-final/Programa_Final`
+3. Run Streamlit: `streamlit run app.py`
